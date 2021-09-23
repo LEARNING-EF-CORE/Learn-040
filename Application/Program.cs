@@ -30,6 +30,8 @@ namespace Application
 
 		public static void Main()
 		{
+			GetTSql();
+
 			try
 			{
 				// **************************************************
@@ -726,283 +728,305 @@ namespace Application
 				// **************************************************
 				// **************************************************
 
+				// **************************************************
+				//N Fields
+				// ----------
 
+				// ----------
+				//1 Field -> Search
 
+				//Full Name ___________
 
+				//[Search]
 
+				// 2 -> if / else
+				// ----------
 
+				// ----------
+				//2 Fields -> Search
 
+				//Full Name ___________
+				//Address   ___________
 
+				//[Search]
 
+				// 4 -> if / else
+				// ----------
+
+				// ----------
+				// M Fields for Searching
+				//  M
+				// 2   -> if / else
+				// ----------
 
 				// **************************************************
-				int countryCount = 0;
-				// **************************************************
-
-				// **************************************************
-				// خاطره
-				//DatabaseContext.Countries
-				//	.Where(current => current.Code => 5)
-				//	.Where(current => current.Code <= 45)
-				//	.Load();
-				// **************************************************
-
-				// **************************************************
-				DatabaseContext.Countries
-					.Where(current => current.Code >= 5)
-					.Where(current => current.Code <= 45)
-					.Load();
-
-				countryCount =
-					DatabaseContext.Countries.Local.Count;
-
-				DatabaseContext.Countries
-					.Where(current => current.Code >= 10)
-					.Where(current => current.Code <= 50)
-					.Load();
-
-				countryCount =
-					DatabaseContext.Countries.Local.Count;
-				// **************************************************
-
-				string countryNameString = string.Empty;
-				string countryCodeToString = string.Empty;
-				string countryCodeFromString = string.Empty;
 
 				// **************************************************
 				// **************************************************
 				// **************************************************
-				//var data =
-				//	DatabaseContext.Countries
-				//		.Where(current => current.IsActive)
-				//		;
-
-				//var data =
-				//	DatabaseContext.Countries
-				//		.Where(current => 1 == 1)
-				//		;
-
-				var data =
-					DatabaseContext.Countries
-					.AsQueryable()
-					;
-
-				if (string.IsNullOrWhiteSpace(countryNameString) == false)
 				{
+					string countryNameString = string.Empty;
+					string countryCodeToString = string.Empty;
+					string countryCodeFromString = string.Empty;
+					// **************************************************
+
+					// **************************************************
+					//var data =
+					//	DatabaseContext.Countries
+					//		.Where(current => current.IsActive)
+					//		;
+
+					// در نسخه‌های قدیمی
+					//var data =
+					//	DatabaseContext.Countries
+					//		.Where(current => 1 == 1)
+					//		;
+
+					// در نسخه‌های جدید
+					var data =
+						DatabaseContext.Countries
+						.AsQueryable()
+						;
+
+					if (string.IsNullOrWhiteSpace(countryNameString) == false)
+					{
+						data =
+							data
+							.Where(current => current.Name.ToLower().Contains(countryNameString.ToLower()))
+							;
+					}
+
+					if (string.IsNullOrWhiteSpace(countryCodeFromString) == false)
+					{
+						// Note: Wrong Usage!
+						//data =
+						//	data
+						//	.Where(current => current.Code >= System.Convert.ToInt32(countryCodeFromString))
+						//	;
+
+						int countryCodeFrom =
+							System.Convert.ToInt32(countryCodeFromString);
+
+						data =
+							data
+							.Where(current => current.Code >= countryCodeFrom)
+							;
+					}
+
+					if (string.IsNullOrWhiteSpace(countryCodeToString) == false)
+					{
+						int countryCodeTo =
+							System.Convert.ToInt32(countryCodeToString);
+
+						data =
+							data
+							.Where(current => current.Code <= countryCodeTo)
+							;
+					}
+
 					data =
 						data
-						.Where(current => current.Name.ToLower().Contains(countryNameString.ToLower()))
+						.OrderBy(current => current.Id)
 						;
-				}
 
-				if (string.IsNullOrWhiteSpace(countryCodeFromString) == false)
-				{
+					//data
+					//	.Load();
+
+					// يا
+
 					// Note: Wrong Usage!
-					//data =
-					//	data
-					//	.Where(current => current.Code >= System.Convert.ToInt32(countryCodeFromString))
-					//	;
+					//data = data.ToList();
 
-					int countryCodeFrom =
-						System.Convert.ToInt32(countryCodeFromString);
-
-					data =
-						data
-						.Where(current => current.Code >= countryCodeFrom)
+					var result =
+						data.ToList()
 						;
+
+					// result معادل DatabaseContext.Countries.Local
 				}
+				// **************************************************
 
-				if (string.IsNullOrWhiteSpace(countryCodeToString) == false)
+				// **************************************************
 				{
-					int countryCodeTo =
-						System.Convert.ToInt32(countryCodeToString);
+					string search = "   Ali       Reza  Iran Carpet                 Ali         ";
 
-					data =
-						data
-						.Where(current => current.Code <= countryCodeTo)
+					string[] keywords =
+						{ "Ali", "Reza", "Iran", "Carpet" }; // یه جوری
+
+					var dataTemp =
+						DatabaseContext.Countries
+						.AsQueryable()
 						;
-				}
 
-				data =
-					data
-					.OrderBy(current => current.Id)
-					;
+					foreach (var keyword in keywords)
+					{
+						dataTemp =
+							dataTemp
+							.Where(current => current.Name.ToLower().Contains(keyword.ToLower()))
+							;
+					}
 
-				data
-					.Load();
-
-				// يا
-
-				// Note: Wrong Usage!
-				//data = data.ToList();
-
-				var result =
-					data.ToList()
-					;
-
-				// result معادل DatabaseContext.Countries.Local
-				// **************************************************
-
-				// **************************************************
-				string search1 = "   Ali       Reza  Iran Carpet   Ali         ";
-
-				string[] keywords1 =
-					{ "Ali", "Reza", "Iran", "Carpet" }; // یه جوری
-
-				var dataTemp1 =
-					DatabaseContext.Countries
-					.AsQueryable();
-
-				foreach (var keyword in keywords1)
-				{
-					dataTemp1 =
-						dataTemp1
-						.Where(current => current.Name.Contains(keyword))
-						;
-				}
-
-				dataTemp1 =
-					dataTemp1
-					.OrderBy(current => current.Code)
-					;
-
-				var dataResult1 =
-					dataTemp1
-					.ToList()
-					;
-				// **************************************************
-
-				// **************************************************
-				string search2 = "   Ali       Reza  Iran Carpet   Ali         ";
-
-				search2 = search2.Trim();
-
-				//search2 = "Ali       Reza  Iran Carpet   Ali";
-
-				while (search2.Contains("  "))
-				{
-					search2 =
-						search2.Replace("  ", " ");
-				}
-
-				//search2 = "Ali Reza Iran Carpet Ali";
-
-				//string[] keywords =
-				//	search2.Split(' ');
-
-				//keywords = { "Ali", "Reza", "Iran", "Carpet", "Ali" }
-
-				var keywords =
-					search2.Split(' ').Distinct<string>();
-
-				//keywords = { "Ali", "Reza", "Iran", "Carpet" };
-
-				var dataTemp =
-					DatabaseContext.Countries
-					.AsQueryable()
-					;
-
-				// Solution (1)
-				foreach (string keyword in keywords)
-				{
 					dataTemp =
 						dataTemp
-						.Where(current => current.Name.ToLower().Contains(keyword.ToLower()))
+						.OrderBy(current => current.Code)
+						;
+
+					var result =
+						dataTemp
+						.ToList()
 						;
 				}
-				// /Solution (1)
-
-				// Solution (2)
-				// Mr. Farshad Rabiei
-				// دستور ذیل باید چک شود
-				//dataTemp =
-				//	dataTemp.Where(current => keywords.Contains(current.Name));
-				// /Solution (2)
-
-				dataTemp =
-					dataTemp
-					.OrderBy(current => current.Code)
-					;
-
-				dataTemp
-					.Load();
-
-				// يا
-
-				var dataResult =
-					dataTemp
-					.ToList()
-					;
 				// **************************************************
 
 				// **************************************************
-				// روش اول
-				// دستورات ذيل کاملا با هم معادل هستند
-				DatabaseContext.Countries
-					.Load();
+				{
+					string search = "   Ali       Reza  Iran Carpet                 Ali         ";
 
-				// DatabaseContext.Countries.Local
+					if (string.IsNullOrWhiteSpace(search))
+					{
+						return;
+					}
 
-				// روش دوم
-				var someData0100 =
+					search =
+						search.Trim();
+
+					//search = "Ali       Reza  Iran Carpet                 Ali";
+
+					while (search.Contains("  "))
+					{
+						search =
+							search.Replace("  ", " ");
+					}
+
+					//search = "Ali Reza Iran Carpet Ali";
+
+					//string[] keywords = search.Split(' ');
+
+					//keywords = { "Ali", "Reza", "Iran", "Carpet", "Ali" }
+
+					var keywords =
+						search.Split(' ').Distinct();
+
+					//keywords = { "Ali", "Reza", "Iran", "Carpet" };
+
+					var dataTemp =
+						DatabaseContext.Countries
+						.AsQueryable()
+						;
+
+					// Solution (1)
+					foreach (string keyword in keywords)
+					{
+						dataTemp =
+							dataTemp
+							.Where(current => current.Name.ToLower().Contains(keyword.ToLower()))
+							;
+					}
+					// /Solution (1)
+
+					// Solution (2)
+					// Mr. Farshad Rabiei
+					// دستور ذیل باید چک شود
+					//dataTemp =
+					//	dataTemp.Where(current => keywords.Contains(current.Name));
+					// /Solution (2)
+
+					dataTemp =
+						dataTemp
+						.OrderBy(current => current.Code)
+						;
+
+					dataTemp
+						.Load();
+
+					// يا
+
+					var result =
+						dataTemp
+						.ToList()
+						;
+				}
+				// **************************************************
+
+				// **************************************************
+				{
+					// روش اول
+					// دستورات ذيل کاملا با هم معادل هستند
 					DatabaseContext.Countries
-					.ToList()
-					;
+						.Load();
+				}
 
-				// روش سوم
-				var someData0200 =
-					from Country in DatabaseContext.Countries
-					select Country
-					;
+				{
+					// روش دوم
+					// LINQ: Lambda Expression, Arrow Function
+					var result =
+						DatabaseContext.Countries
+						.ToList()
+						;
+				}
+
+				{
+					// روش سوم
+					// LINQ: Traditional
+					var result =
+						from Country in DatabaseContext.Countries
+						select Country
+						;
+				}
 
 				// SELECT * FROM Countries
 				// **************************************************
 
 				// **************************************************
-				// ها Country آرایه ای از
-				var someData0300 =
-					from Country in DatabaseContext.Countries
-					where Country.Name.ToLower().Contains("Iran".ToLower())
-					select Country
-					;
-				// **************************************************
-
-				// **************************************************
-				// ها Country آرایه ای از
-				var someData0400 =
-					from Country in DatabaseContext.Countries
-					where Country.Name.ToLower().Contains("Iran".ToLower())
-					orderby Country.Name
-					select Country
-					;
-
-				foreach (Domain.Country currentCountry in someData0400)
 				{
-					System.Console.WriteLine(currentCountry.Name);
+					// ها Country آرایه‌ای از
+					var result =
+						from Country in DatabaseContext.Countries
+						where Country.Name.ToLower().Contains("Iran".ToLower())
+						select Country
+						;
 				}
 				// **************************************************
 
 				// **************************************************
-				// ها String آرایه ای از
-				// (A)
-				var someData0500 =
-					from Country in DatabaseContext.Countries
-					where Country.Name.ToLower().Contains("Iran".ToLower())
-					orderby Country.Name
-					select Country.Name
-					;
-
-				// Select Name From Countries
-
-				// Note: Wrong Usage!
-				//foreach (Models.Country currentCountry in someData0500)
-				//{
-				//	System.Console.WriteLine(currentCountry.Name);
-				//}
-
-				foreach (string currentCountryName in someData0500)
 				{
-					System.Console.WriteLine(currentCountryName);
+					// ها Country آرایه‌ای از
+					var result =
+						from Country in DatabaseContext.Countries
+						where Country.Name.ToLower().Contains("Iran".ToLower())
+						orderby Country.Name
+						select Country
+						;
+
+					foreach (Domain.Country item in result)
+					{
+						System.Console.WriteLine(item.Name);
+					}
+				}
+				// **************************************************
+
+				// **************************************************
+				{
+					// ها String آرایه‌ای از
+					// (A)
+					var result =
+						from Country in DatabaseContext.Countries
+						where Country.Name.ToLower().Contains("Iran".ToLower())
+						orderby Country.Name
+						select Country.Name
+						;
+
+					// SQL: SELECT Name FROM Countries
+
+					// Note: Wrong Usage!
+					//foreach (Models.Country item in result)
+					//{
+					//	System.Console.WriteLine(item.Name);
+					//}
+
+					foreach (string item in result)
+					{
+						System.Console.WriteLine(item);
+					}
 				}
 				// **************************************************
 
@@ -1011,156 +1035,169 @@ namespace Application
 				// **************************************************
 
 				// **************************************************
-				// ها Object آرایه ای از
-				// (B)
-				var someData0600 =
-					from Country in DatabaseContext.Countries
-					where Country.Name.ToLower().Contains("Iran".ToLower())
-					orderby Country.Name
-					select new { Name = Country.Name }
-					;
-
-				// Note: Wrong Usage!
-				//foreach (Models.Country currentCountry in someData0600)
-				//{
-				//	System.Windows.Forms.MessageBox.Show(currentCountry.Name);
-				//}
-
-				foreach (var currentPartialCountry in someData0600)
 				{
-					System.Console.WriteLine
-						(currentPartialCountry.Name);
+					// ها Object آرایه ای از
+					// (B)
+					var result =
+						from Country in DatabaseContext.Countries
+						where Country.Name.ToLower().Contains("Iran".ToLower())
+						orderby Country.Name
+						select new { Name = Country.Name }
+						;
+
+					// SQL: SELECT Name FROM Countries
+
+					// Note: Wrong Usage!
+					//foreach (Models.Country item in result)
+					//{
+					//	System.Windows.Forms.MessageBox.Show(item.Name);
+					//}
+
+					// Note: Wrong Usage!
+					//foreach (string item in result)
+					//{
+					//	System.Windows.Forms.MessageBox.Show(item);
+					//}
+
+					foreach (var item in result)
+					{
+						System.Console.WriteLine(item.Name);
+					}
 				}
 				// **************************************************
 
 				// **************************************************
-				var someData0700 =
-					from Country in DatabaseContext.Countries
-					where Country.Name.Contains("Iran")
-					orderby Country.Name
-					select new { Country.Name }
-					;
-
-				foreach (var currentPartialCountry in someData0700)
 				{
-					System.Console.WriteLine(currentPartialCountry.Name);
+					var result =
+						from Country in DatabaseContext.Countries
+						where Country.Name.Contains("Iran")
+						orderby Country.Name
+						select new { Country.Name }
+						;
+
+					foreach (var item in result)
+					{
+						System.Console.WriteLine(item.Name);
+					}
 				}
 				// **************************************************
 
 				// **************************************************
-				// (C)
-				var someData0800 =
-					from Country in DatabaseContext.Countries
-					where Country.Name.Contains("Iran")
-					orderby Country.Name
-					select new { Baghali = Country.Name }
-					;
-
-				// Note: Wrong Usage!
-				//foreach (Models.Country currentCountry in someData0800)
-				//{
-				//	System.Windows.Forms.MessageBox.Show(currentCountry.Name);
-				//}
-
-				// Note: Wrong Usage!
-				//foreach (var currentPartialCountry in someData0800)
-				//{
-				//	System.Windows.Forms.MessageBox.Show(currentPartialCountry.Name);
-				//}
-
-				foreach (var currentPartialCountry in someData0800)
 				{
-					System.Console.WriteLine
-						(currentPartialCountry.Baghali);
+					// (C)
+					var result =
+						from Country in DatabaseContext.Countries
+						where Country.Name.Contains("Iran")
+						orderby Country.Name
+						select new { Baghali = Country.Name }
+						;
+
+					// Note: Wrong Usage!
+					//foreach (Models.Country item in result)
+					//{
+					//	System.Windows.Forms.MessageBox.Show(item.Name);
+					//}
+
+					foreach (var item in result)
+					{
+						System.Console.WriteLine(item.Baghali);
+					}
 				}
 				// **************************************************
 
 				// **************************************************
-				var someData0900 =
-					from Country in DatabaseContext.Countries
-					where Country.Name.Contains("Iran")
-					orderby Country.Name
-					select new { Size = Country.Population, Country.Name }
-					;
-
-				foreach (var currentPartialCountry in someData0900)
 				{
-					System.Console.WriteLine
-						(currentPartialCountry.Name);
+					var result =
+						from Country in DatabaseContext.Countries
+						where Country.Name.Contains("Iran")
+						orderby Country.Name
+						select new { Size = Country.Population, Country.Name }
+						;
+
+					// SQL: SELECT Name, Population FROM Countries
+
+					foreach (var item in result)
+					{
+						System.Console.WriteLine(item.Name);
+					}
 				}
 				// **************************************************
 
 				// **************************************************
 				// **************************************************
 				// **************************************************
-				// (D1)
-				var someData1001 =
-					from Country in DatabaseContext.Countries
-					where Country.Name.Contains("Iran")
-					orderby Country.Name
-					select (new CountryViewModel1() { NewName = Country.Name })
-					;
-
-				foreach (CountryViewModel1 currentCountryViewModel in someData1001)
 				{
-					currentCountryViewModel.NewName += "!";
+					// (D1)
+					var result =
+						from Country in DatabaseContext.Countries
+						where Country.Name.Contains("Iran")
+						orderby Country.Name
+						select (new CountryViewModel1() { NewName = Country.Name })
+						;
 
-					System.Console.WriteLine
-						(currentCountryViewModel.NewName);
+					foreach (CountryViewModel1 item in result)
+					{
+						item.NewName += "!";
+
+						System.Console.WriteLine(item.NewName);
+					}
 				}
 				// **************************************************
 
 				// **************************************************
-				// (D1)
-				var someData1002 =
-					from Country in DatabaseContext.Countries
-					where Country.Name.Contains("Iran")
-					orderby Country.Name
-					select (new CountryViewModel2() { Name = Country.Name })
-					;
-
-				foreach (CountryViewModel2 currentCountryViewModel in someData1002)
 				{
-					currentCountryViewModel.Name += "!";
+					// (D1)
+					var result =
+						from Country in DatabaseContext.Countries
+						where Country.Name.Contains("Iran")
+						orderby Country.Name
+						select (new CountryViewModel2 { Name = Country.Name })
+						;
 
-					System.Console.WriteLine
-						(currentCountryViewModel.Name);
+					foreach (CountryViewModel2 item in result)
+					{
+						item.Name += "!";
+
+						System.Console.WriteLine(item.Name);
+					}
 				}
 				// **************************************************
 
 				// **************************************************
-				// (D3)
-				// Note: Wrong Usage!
-				//var someData1003 =
-				//	from Country in DatabaseContext.Countries
-				//	where Country.Name.Contains("Iran")
-				//	orderby Country.Name
-				//	select (new CountryViewModel2() { Country.Name })
-				//	;
-
-				//foreach (CountryViewModel2 currentCountryViewModel in someData1003)
-				//{
-				//	currentCountryViewModel.Name += "!";
-
-				//	System.Windows.Forms.MessageBox.Show(currentCountryViewModel.Name);
-				//}
-				// **************************************************
-				// **************************************************
-				// **************************************************
-
-				// **************************************************
-				// (E)
-				// Note: متاسفانه کار نمی کند
-				var someData1100 =
-					from Country in DatabaseContext.Countries
-					where Country.Name.Contains("Iran")
-					orderby Country.Name
-					select new Domain.Country() { Name = Country.Name }
-					;
-
-				foreach (Domain.Country currentCountry in someData1100)
 				{
-					System.Console.WriteLine(currentCountry.Name);
+					// (D3)
+					// Note: Wrong Usage!
+					//var result =
+					//	from Country in DatabaseContext.Countries
+					//	where Country.Name.Contains("Iran")
+					//	orderby Country.Name
+					//	select (new CountryViewModel2 { Country.Name })
+					//	;
+
+					//foreach (CountryViewModel2 item in result)
+					//{
+					//	item.Name += "!";
+
+					//	System.Console.WriteLine(item.Name);
+					//}
+				}
+				// **************************************************
+
+				// **************************************************
+				{
+					// (E)
+					// Note: متاسفانه کار نمی کند
+					var result =
+						from Country in DatabaseContext.Countries
+						where Country.Name.Contains("Iran")
+						orderby Country.Name
+						select new Domain.Country { Name = Country.Name }
+						;
+
+					foreach (Domain.Country item in result)
+					{
+						System.Console.WriteLine(item.Name);
+					}
 				}
 				// **************************************************
 				// **************************************************
@@ -1169,360 +1206,438 @@ namespace Application
 				// **************************************************
 				// **************************************************
 				// **************************************************
-				var someData1200 =
-					DatabaseContext.Countries
-					.ToList()
-					;
+				{
+					var result =
+						DatabaseContext.Countries
+						.ToList()
+						;
 
-				// "SELECT * FROM Countries"
-				// **************************************************
-
-				// **************************************************
-				// It is similar to (A)
-				var someData1300 =
-					DatabaseContext.Countries
-					.Select(current => current.Name)
-					.ToList()
-					;
-
-				// "SELECT Name FROM Countries"
+					// "SELECT * FROM Countries"
+				}
 				// **************************************************
 
 				// **************************************************
-				// It is similar to (B)
-				var someData1400 =
-					DatabaseContext.Countries
-					.Select(current => new { Name = current.Name })
-					.ToList()
-					;
+				{
+					// It is similar to (A)
+					var result =
+						DatabaseContext.Countries
+						.Select(current => current.Name)
+						.ToList()
+						;
 
-				// "SELECT Name FROM Countries"
-				// **************************************************
+					// result -> string[]
 
-				// **************************************************
-				// It is similar to (B)
-				var someData1500 =
-					DatabaseContext.Countries
-					.Select(current => new { current.Name })
-					.ToList()
-					;
-
-				// "SELECT Name FROM Countries"
+					// "SELECT Name FROM Countries"
+				}
 				// **************************************************
 
 				// **************************************************
-				// It is similar to (C)
-				var someData1600 =
-					DatabaseContext.Countries
-					.Select(current => new { Baghali = current.Name })
-					.ToList()
-					;
+				{
+					// It is similar to (B)
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new { Name = current.Name })
+						.ToList()
+						;
 
-				// "SELECT Name FROM Countries"
-				// **************************************************
-
-				// **************************************************
-				// It is similar to (D)
-				var someData17001 =
-					DatabaseContext.Countries
-					.Select(current => new CountryViewModel1() { NewName = current.Name })
-					.ToList()
-					;
+					// "SELECT Name FROM Countries"
+				}
 				// **************************************************
 
 				// **************************************************
-				// It is similar to (D)
-				var someData17002 =
-					DatabaseContext.Countries
-					.Select(current => new CountryViewModel2() { Name = current.Name })
-					.ToList()
-					;
+				{
+					// It is similar to (B)
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new { current.Name })
+						.ToList()
+						;
+
+					// "SELECT Name FROM Countries"
+				}
 				// **************************************************
 
 				// **************************************************
-				// Note: Wrong Usage!
-				// It is similar to (D)
-				//var someData17003 =
-				//	DatabaseContext.Countries
-				//	.Select(current => new CountryViewModel2() { current.Name })
-				//	.ToList()
-				//	;
+				{
+					// It is similar to (C)
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new { Baghali = current.Name })
+						.ToList()
+						;
+
+					// "SELECT Name FROM Countries"
+				}
 				// **************************************************
 
 				// **************************************************
-				// It is similar to (E)
-				// Note: متاسفانه کار نمی کند
-				var someData1800 =
-					DatabaseContext.Countries
-					.Select(current => new Domain.Country() { Name = current.Name })
-					.ToList()
-					;
+				{
+					// It is similar to (D)
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new CountryViewModel1() { NewName = current.Name })
+						.ToList()
+						;
+
+					// "SELECT Name FROM Countries"
+				}
 				// **************************************************
 
 				// **************************************************
-				var someData1900 =
-					DatabaseContext.Countries
-					.Select(current => new { current.Name })
-					.ToList()
-					.Select(current => new Domain.Country()
-					{
-						Name = current.Name,
-					})
-					.ToList()
-					;
+				{
+					// It is similar to (D)
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new CountryViewModel2 { Name = current.Name })
+						.ToList()
+						;
 
-				// "SELECT Name FROM Countries"
+					// "SELECT Name FROM Countries"
+				}
 				// **************************************************
 
 				// **************************************************
-				var someData2000 =
-					DatabaseContext.Countries
-					.Select(current => new { current.Id, current.Name })
-					.ToList()
-					.Select(current => new Domain.Country()
-					{
-						Id = current.Id,
-						Name = current.Name,
-					})
-					.ToList()
-					;
+				{
+					// Note: Wrong Usage!
+					// It is similar to (D)
+					//var result =
+					//	DatabaseContext.Countries
+					//	.Select(current => new CountryViewModel2() { current.Name })
+					//	.ToList()
+					//	;
 
-				// "SELECT Id, Name FROM Countries"
+					// "SELECT Name FROM Countries"
+				}
 				// **************************************************
 
 				// **************************************************
-				// **************************************************
-				// **************************************************
-				var someData2100 =
-					DatabaseContext.Countries
-					.Select(current => new
-					{
-						Id = current.Id,
-						Name = current.Name,
-						StateCount = current.States.Count,
-					})
-					.ToList()
-					;
-				// **************************************************
+				{
+					// It is similar to (E)
+					// Note: متاسفانه کار نمی کند
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new Domain.Country { Name = current.Name })
+						.ToList()
+						;
 
-				// **************************************************
-				var someData2200 =
-					DatabaseContext.Countries
-					.Select(current => new
-					{
-						current.Id,
-						current.Name,
-						StateCount = current.States.Count,
-					})
-					.ToList()
-					;
-				// **************************************************
-				// **************************************************
+					// "SELECT Name FROM Countries"
+				}
 				// **************************************************
 
 				// **************************************************
+				{
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new { current.Name })
+						.ToList()
+						.Select(current => new Domain.Country
+						{
+							Name = current.Name,
+						})
+						.ToList()
+						;
+
+					// "SELECT Name FROM Countries"
+				}
 				// **************************************************
+
 				// **************************************************
-				// در دو دستور ذیل در صورتی که تحت شرایطی تعداد استان‌ها برای یک کشور صفر باشد، خطا ایجاد می‌شود
-				var someData2300 =
-					DatabaseContext.Countries
-					.Select(current => new
-					{
-						current.Id,
-						current.Name,
-						StateCount = current.States.Count,
-						CityCount = current.States.Sum(state => state.Cities.Count),
-					})
-					.ToList()
-					;
+				{
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new { current.Id, current.Name })
+						.ToList()
+						.Select(current => new Domain.Country
+						{
+							Id = current.Id,
+							Name = current.Name,
+						})
+						.ToList()
+						;
 
-				var someData2400 =
-					DatabaseContext.Countries
-					.Select(current => new
-					{
-						current.Id,
-						current.Name,
-						StateCount = current.States.Count,
-						CityCount = current.States.Select(state => state.Cities.Count).Sum(),
-					})
-					.ToList()
-					;
-
-				var someData2500 =
-					DatabaseContext.Countries
-					.Select(current => new
-					{
-						current.Id,
-						current.Name,
-
-						StateCount = current.States.Count,
-
-						CityCount = current.States.Count == 0 ? 0 :
-							current.States.Select(state => new { XCount = state.Cities.Count }).Sum(x => x.XCount)
-
-						//CityCount = current.States.Count == 0 ? 0 :
-						//	current.States.Select(state => state.Cities.Count).Sum()
-
-						//CityCount = current.States == null || current.States.Count == 0 ? 0 :
-						//	current.States.Select(state => new { XCount = state.Cities == null ? 0 : state.Cities.Count }).Sum(x => x.XCount)
-					})
-					.ToList()
-					;
-
-				// مهدی اکبری
-				var someData2600 =
-					DatabaseContext.Countries
-					.Select(current => new
-					{
-						current.Id,
-						current.Name,
-
-						StateCount = current.States.Count,
-
-						CityCount = current.States.Select(state => state.Cities.Count).DefaultIfEmpty(0).Sum(),
-					})
-					.ToList()
-					;
+					// "SELECT Id, Name FROM Countries"
+				}
 				// **************************************************
 				// **************************************************
 				// **************************************************
 
+				// **************************************************
+				// **************************************************
+				// **************************************************
+				{
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new
+						{
+							Id = current.Id,
+							Name = current.Name,
+							StateCount = current.States.Count,
+						})
+						.ToList()
+						;
+				}
+				// **************************************************
+
+				// **************************************************
+				{
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new
+						{
+							current.Id,
+							current.Name,
+							StateCount = current.States.Count,
+						})
+						.ToList()
+						;
+				}
+				// **************************************************
+				// **************************************************
+				// **************************************************
+
+				// **************************************************
+				// **************************************************
+				// **************************************************
+				{
+					// در دو دستور ذیل در صورتی که تحت شرایطی تعداد
+					// استان‌ها برای یک کشور صفر باشد، خطا ایجاد می‌شود
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new
+						{
+							current.Id,
+							current.Name,
+							StateCount = current.States.Count,
+							CityCount = current.States.Sum(state => state.Cities.Count),
+						})
+						.ToList()
+						;
+				}
+
+				{
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new
+						{
+							current.Id,
+							current.Name,
+
+							StateCount =
+								current.States.Count,
+
+							CityCount =
+								current.States.Select(state => state.Cities.Count).Sum(),
+						})
+						.ToList()
+						;
+				}
+
+				{
+					var result =
+						DatabaseContext.Countries
+						.Select(current => new
+						{
+							current.Id,
+							current.Name,
+
+							StateCount =
+								current.States.Count,
+
+							CityCount =
+								current.States.Count == 0 ? 0 :
+								current.States.Select(state => new { XCount = state.Cities.Count }).Sum(x => x.XCount)
+
+							//CityCount = current.States.Count == 0 ? 0 :
+							//	current.States.Select(state => state.Cities.Count).Sum()
+
+							//CityCount = current.States == null || current.States.Count == 0 ? 0 :
+							//	current.States.Select(state => new { XCount = state.Cities == null ? 0 : state.Cities.Count }).Sum(x => x.XCount)
+						})
+						.ToList()
+						;
+				}
+
+				{
+					// مهدی اکبری
+					var someData2600 =
+						DatabaseContext.Countries
+						.Select(current => new
+						{
+							current.Id,
+							current.Name,
+
+							StateCount =
+								current.States.Count,
+
+							CityCount =
+								current.States.Select(state => state.Cities.Count).DefaultIfEmpty(0).Sum(),
+						})
+						.ToList()
+						;
+				}
+				// **************************************************
+				// **************************************************
+				// **************************************************
+
+				// **************************************************
+				// **************************************************
+				// **************************************************
 				// Group By
+				// **************************************************
+				{
+					var result =
+						DatabaseContext.Countries
+						.GroupBy(current => current.Population)
+						.Select(current => new
+						{
+							Population = current.Key,
 
-				var someData2700 =
-					DatabaseContext.Countries
-					.GroupBy(current => current.Population)
-					.Select(current => new
-					{
-						Population = current.Key,
+							Count = current.Count(),
+						})
+						.ToList()
+						;
+				}
 
-						Count = current.Count(),
-					})
-					.ToList()
-					;
+				{
+					var result =
+						DatabaseContext.Countries
+						.Where(current => current.Population >= 120)
+						.GroupBy(current => current.Population)
+						.Select(current => new
+						{
+							Population = current.Key,
 
-				var someData2800 =
-					DatabaseContext.Countries
-					.Where(current => current.Population >= 120000000)
-					.GroupBy(current => current.Population)
-					.Select(current => new
-					{
-						Population = current.Key,
+							Count = current.Count(),
+						})
+						.ToList()
+						;
+				}
 
-						Count = current.Count(),
-					})
-					.ToList()
-					;
+				{
+					var result =
+						DatabaseContext.Countries
+						.GroupBy(current => current.Population)
+						.Select(current => new
+						{
+							Population = current.Key,
 
-				var someData2900 =
-					DatabaseContext.Countries
-					.GroupBy(current => current.Population)
-					.Select(current => new
-					{
-						Population = current.Key,
+							Count = current.Count(),
+						})
+						.Where(ao => ao.Population >= 120)
+						.ToList()
+						;
+				}
 
-						Count = current.Count(),
-					})
-					.Where(ao => ao.Population >= 120000000)
-					.ToList()
-					;
+				{
+					var result =
+						DatabaseContext.Countries
+						.Where(current => current.Name.ToLower().Contains("Iran".ToLower()))
+						.GroupBy(current => current.Population)
+						.Select(current => new
+						{
+							Population = current.Key,
 
-				var someData3000 =
-					DatabaseContext.Countries
-					.Where(current => current.Name.Contains('I'))
-					.GroupBy(current => current.Population)
-					.Select(current => new
-					{
-						Population = current.Key,
+							Count = current.Count(),
+						})
+						.ToList()
+						;
+				}
 
-						Count = current.Count(),
-					})
-					.ToList()
-					;
+				{
+					// Note: Wrong Usage!
+					//var result =
+					//	DatabaseContext.Countries
+					//	.GroupBy(current => current.Population)
+					//	.Select(current => new
+					//	{
+					//		Population = current.Key,
 
-				// Note: Wrong Usage!
-				//var someData3100 =
-				//	DatabaseContext.Countries
-				//	.GroupBy(current => current.Population)
-				//	.Select(current => new
-				//	{
-				//		Population = current.Key,
+					//		Count = current.Count(),
+					//	})
+					//	.Where(ao => ao.Name.ToLower().Contains("Iran".ToLower()))
+					//	.ToList()
+					//	;
+				}
 
-				//		Count = current.Count(),
-				//	})
-				//	.Where(ao => ao.Name.Contains('ا'))
-				//	.ToList()
-				//	;
+				{
+					var result =
+						DatabaseContext.Countries
+						.GroupBy(current => current.Population)
+						.Select(current => new
+						{
+							Population = current.Key,
 
-				var someData3200 =
-					DatabaseContext.Countries
-					.GroupBy(current => current.Population)
-					.Select(current => new
-					{
-						Population = current.Key,
+							Count = current.Count(),
+						})
+						.Where(ao => ao.Count >= 30)
+						.ToList()
+						;
+				}
 
-						Count = current.Count(),
-					})
-					.Where(ao => ao.Count >= 30)
-					.ToList()
-					;
+				{
+					var result =
+						DatabaseContext.Countries
+						.Where(current => current.Name.ToLower().Contains("Iran".ToLower()))
+						.GroupBy(current => current.Population)
+						.Select(current => new
+						{
+							Population = current.Key,
 
-				var someData3300 =
-					DatabaseContext.Countries
-					.Where(current => current.Name.Contains('I'))
-					.GroupBy(current => current.Population)
-					.Select(current => new
-					{
-						Population = current.Key,
+							Count = current.Count(),
+						})
+						.Where(ao => ao.Count >= 30)
+						.ToList()
+						;
+				}
 
-						Count = current.Count(),
-					})
-					.Where(ao => ao.Count >= 30)
-					.ToList()
-					;
+				{
+					var result =
+						DatabaseContext.Countries
+						.GroupBy(current => new { current.Population, current.HealthyRate })
+						.Select(current => new
+						{
+							Population = current.Key.Population,
+							HealthyRate = current.Key.HealthyRate,
 
-				var someData3400 =
-					DatabaseContext.Countries
-					.GroupBy(current => new { current.Population, current.HealthyRate })
-					.Select(current => new
-					{
-						Population = current.Key.Population,
-						HealthyRate = current.Key.HealthyRate,
+							Count = current.Count(),
+						})
+						.ToList()
+						;
+				}
 
-						Count = current.Count(),
-					})
-					.ToList()
-					;
+				{
+					var result =
+						DatabaseContext.Countries
+						.GroupBy(current => new { current.Population, current.HealthyRate })
+						.Select(current => new
+						{
+							current.Key.Population,
+							current.Key.HealthyRate,
 
-				var someData3500 =
-					DatabaseContext.Countries
-					.GroupBy(current => new { current.Population, current.HealthyRate })
-					.Select(current => new
-					{
-						current.Key.Population,
-						current.Key.HealthyRate,
+							Count = current.Count(),
+						})
+						.ToList()
+						;
+				}
 
-						Count = current.Count(),
-					})
-					.ToList()
-					;
+				{
+					var result =
+						DatabaseContext.Countries
+						.GroupBy(current => current.Population)
+						.Select(current => new
+						{
+							Population = current.Key,
 
-				var someData3600 =
-					DatabaseContext.Countries
-					.GroupBy(current => current.Population)
-					.Select(current => new
-					{
-						Population = current.Key,
+							Count = current.Count(),
 
-						Count = current.Count(),
-
-						Max = current.Max(x => x.HealthyRate),
-						Min = current.Min(x => x.HealthyRate),
-						Sum = current.Sum(x => x.HealthyRate),
-						Average = current.Average(x => x.HealthyRate),
-					})
-					.ToList()
-					;
+							Max = current.Max(x => x.HealthyRate),
+							Min = current.Min(x => x.HealthyRate),
+							Sum = current.Sum(x => x.HealthyRate),
+							Average = current.Average(x => x.HealthyRate),
+						})
+						.ToList()
+						;
+				}
 			}
 			catch (System.Exception ex)
 			{
@@ -1551,7 +1666,7 @@ namespace Application
 			public string Name { get; set; }
 		}
 
-		private static void SomeFunction_3(object sender, System.EventArgs e)
+		private static void GetTSql()
 		{
 			Persistence.DatabaseContext databaseContext = null;
 
@@ -1560,79 +1675,17 @@ namespace Application
 				databaseContext =
 					new Persistence.DatabaseContext();
 
-				//var varSomeData =
-				//	from Country in DatabaseContext.Countries
-				//	where (Country.Name.Contains("Iran"))
-				//	orderby (Country.Name)
-				//	select (new PartialCountry() { Name = Country.Name })
-				//	;
-
-				//var varSomeData =
-				//	from Country in DatabaseContext.Countries
-				//	where (Country.Name.Contains(txtCountryName.Text))
-				//	orderby (Country.Name)
-				//	select (new PartialCountry() { Name = Country.Name })
-				//	;
-
-				string countryName = string.Empty;
-				//string countryName = countryNameTextBox.Text;
-
-				var someData =
-					from Country in databaseContext.Countries
-					where Country.Name.Contains(countryName)
-					orderby Country.Name
-					select (new CountryViewModel1() { NewName = Country.Name })
-					;
-
-				string query = someData.ToString();
-
-				foreach (CountryViewModel1 partialCountry in someData)
 				{
-					string name =
-						partialCountry.NewName;
+					var result =
+						from Country in DatabaseContext.Countries
+						where (Country.Name.ToLower().Contains("Iran".ToLower()))
+						orderby (Country.Name)
+						select (new { CountryName = Country.Name })
+						;
+
+					string sql =
+						result.ToQueryString();
 				}
-
-				var data =
-					databaseContext.Countries
-					.Where(current => 1 == 1)
-					;
-
-				//var data =
-				//	DatabaseContext.Countries
-				//	.AsQueryable()
-				//	;
-
-				//var data =
-				//	DatabaseContext.Countries
-				//	.Select(current => new { current.Name })
-				//	;
-
-				//var data =
-				//	DatabaseContext.Countries
-				//	.Select(current => new PartialCountry() { Name = current.Name })
-				//	;
-
-				// بررسی شود
-				//var data =
-				//	DatabaseContext.Countries
-				//	.Select(current => current.Name)
-				//	;
-
-				data =
-					data
-					.Where(current => current.Name.Contains("Iran"))
-					;
-
-				data =
-					data
-					.OrderBy(current => current.Name)
-					;
-
-				query =
-					data.ToString();
-
-				var varResult =
-					data.ToList();
 			}
 			catch (System.Exception ex)
 			{
@@ -1644,163 +1697,6 @@ namespace Application
 				{
 					databaseContext.Dispose();
 					databaseContext = null;
-				}
-			}
-		}
-
-		private static void SomeFunction_4(object sender, System.EventArgs e)
-		{
-			Persistence.DatabaseContext DatabaseContext = null;
-
-			try
-			{
-				DatabaseContext =
-					new Persistence.DatabaseContext();
-
-				// Solution (1)
-				//var data =
-				//	DatabaseContext.Countries
-				//	.AsQueryable()
-				//	;
-
-				//data =
-				//	data
-				//	.Where(current => current.Name == "Some Name")
-				//	;
-
-				//data =
-				//	data
-				//	.Where(current => current.Population >= 100)
-				//	;
-
-				//data =
-				//	data
-				//	.OrderBy(current => current.Name)
-				//	;
-
-				//string strQuery = data.ToString();
-
-				//SELECT 
-				//[Extent1].[Id] AS [Id], 
-				//[Extent1].[Name] AS [Name], 
-				//[Extent1].[Population] AS [Population]
-				//FROM [dbo].[Countries] AS [Extent1]
-				//WHERE (N'Some Name' = [Extent1].[Name]) AND ([Extent1].[Population] >= 100)
-				//ORDER BY [Extent1].[Name] ASC
-
-				// /Solution (1)
-
-				// Solution (2)
-				//var data =
-				//	DatabaseContext.Countries
-				//	.AsQueryable()
-				//	;
-
-				//data =
-				//	data
-				//	.Where(current => current.Name == "Some Name")
-				//	;
-
-				//data =
-				//	data
-				//	.OrderBy(current => current.Name)
-				//	;
-
-				//data =
-				//	data
-				//	.Where(current => current.Population >= 100)
-				//	;
-
-				//string strQuery = data.ToString();
-
-				//SELECT 
-				//[Extent1].[Id] AS [Id], 
-				//[Extent1].[Name] AS [Name], 
-				//[Extent1].[Population] AS [Population]
-				//FROM [dbo].[Countries] AS [Extent1]
-				//WHERE (N'Some Name' = [Extent1].[Name]) AND ([Extent1].[Population] >= 100)
-				//ORDER BY [Extent1].[Name] ASC
-
-				// /Solution (2)
-
-				// Solution (3)
-				//var data =
-				//	DatabaseContext.Countries
-				//	.AsQueryable()
-				//	;
-
-				//data = data
-				//	.Where(current => current.Name == "Some Name")
-				//	;
-
-				//data = data
-				//	.OrderBy(current => current.Name)
-				//	.AsQueryable()
-				//	;
-
-				//data = data
-				//	.Where(current => current.Population >= 100)
-				//	;
-
-				//string strQuery = data.ToString();
-
-				//SELECT 
-				//[Extent1].[Id] AS [Id], 
-				//[Extent1].[Name] AS [Name], 
-				//[Extent1].[Population] AS [Population]
-				//FROM [dbo].[Countries] AS [Extent1]
-				//WHERE (N'Some Name' = [Extent1].[Name]) AND ([Extent1].[Population] >= 100)
-				//ORDER BY [Extent1].[Name] ASC
-
-				// /Solution (3)
-
-				// Solution (4)
-				var data =
-					DatabaseContext.Countries
-					.AsQueryable()
-					;
-
-				data =
-					data
-					.Where(current => current.Name.StartsWith("A"))
-					;
-
-				data =
-					data
-					.OrderBy(current => current.Name)
-					.AsQueryable()
-					;
-
-				data =
-					data
-					.Where(current => current.Name.EndsWith("Z"))
-					;
-
-				data =
-					data
-					.OrderBy(current => current.Population)
-					.AsQueryable()
-					;
-
-				data =
-					data
-					.Where(current => current.Population >= 100)
-					;
-
-				string strQuery = data.ToString();
-
-				// /Solution (4)
-			}
-			catch (System.Exception ex)
-			{
-				System.Console.WriteLine(ex.Message);
-			}
-			finally
-			{
-				if (DatabaseContext != null)
-				{
-					DatabaseContext.Dispose();
-					DatabaseContext = null;
 				}
 			}
 		}

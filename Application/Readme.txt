@@ -31,3 +31,28 @@ Lazy Loading:
 	Note: All navigation properties should have [virtual] keyword!
 	Note: All class contains navigation properties should have [public] or [protected] constructor!
 ----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+Learning Anonymous Object:
+----------------------------------------------------------------------------------------------------
+
+(1)
+class Person
+{
+	public int Age { get; set; }
+	public string FullName { get; set; }
+}
+
+در جای دیگری
+
+Person thePerson = new Person();
+
+thePerson.Age = 20;
+thePerson.FullName = "Ali Reza Alavi";
+
+----------------------------------------------------------------------------------------------------
+
+(2)
+var thePerson = new { Age = 20, FullName = "Ali Reza Alavi" };
+
+----------------------------------------------------------------------------------------------------
