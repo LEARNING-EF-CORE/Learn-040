@@ -1678,8 +1678,8 @@ namespace Application
 				{
 					var result =
 						from Country in DatabaseContext.Countries
-						where (Country.Name.ToLower().Contains("Iran".ToLower()))
-						orderby (Country.Name)
+						where Country.Name.ToLower().Contains("Iran".ToLower())
+						orderby Country.Name
 						select (new { CountryName = Country.Name })
 						;
 
